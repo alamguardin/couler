@@ -1,8 +1,13 @@
 import sys
 import json
+import secrets
 
 tasks = []
 projects = []
+
+def resetFile(file):
+    file.truncate(0)
+    file.seek(0)
 
 def createProject(name:str):
     newProject = {
@@ -11,19 +16,34 @@ def createProject(name:str):
     }
 
     projects.append(newProject)
+
+def createTask(projectReference:str, description:str):
+    newTask = {
+        'description': description,
+        'reference': projectReference,
+        'id': secrets.token_hex(16),
+        'index': len(tasks) + 1 
+    }
+
+    tasks.append(newTask)
     
 
 if __name__ == '__main__':
-    file = open('projects.json', 'r+')
-    projects = json.loads(file.read())
+    projectsFile = open('projects.json', 'r+')
+    tasksFile = open('tasks.json', 'r+')
+
+    projects = json.loads(projectsFile.read())
+    tasks = json.loads(tasksFile.read())
 
     arguments = sys.argv
 
-    # Create a new project
-    if (arguments[1] == 'create' and arguments[2] == 'project'):
-        createProject(arguments[3])
-        file.truncate(0)
-        file.seek(0)
-        file.write(json.dumps(projects))
-
-    print(projects)
+    # Create new project or task
+    if (arguments[1] == 'create'):
+        if (arguments[2] == 'project'):
+            createProject(arguments[3])
+            resetFile(projectsFile)
+            projectsFile.write(json.dumps(projects))
+        elif (arguments[2] == 'task'):
+            createTask(arguments[3], arguments[4])
+            resetFile(tasksFile)
+            tasksFile.write(json.dumps(tasks))
