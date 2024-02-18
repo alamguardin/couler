@@ -1,3 +1,4 @@
+from operator import ne
 import sys
 import json
 import secrets
@@ -26,6 +27,26 @@ def createTask(projectReference:str, description:str):
     }
 
     tasks.append(newTask)
+
+def deleteProject(id:int):
+    index = 0
+    newTasks = []
+    for project in projects:
+        if (int(project['id']) == id):
+            print(project['id'])
+
+            indexTask = 0
+            for task in tasks:
+                if (task['reference'] != project['name']):
+                    newTasks.append(task)
+                indexTask += 1
+
+            break
+        index += 1
+    
+    projects.pop(index)
+    tasks.clear()
+    tasks.extend(newTasks)
     
 
 if __name__ == '__main__':
@@ -55,3 +76,12 @@ if __name__ == '__main__':
                 print('Tarea creada con exito')
             except:
                 print('Ohh, algo salio mal...')
+    
+    # Remove project or task
+    if (arguments[1] == 'remove'):
+        if (arguments[2] == 'project'):
+            deleteProject(int(arguments[3]))
+            resetFile(projectsFile)
+            resetFile(tasksFile)
+            projectsFile.write(json.dumps(projects))
+            tasksFile.write(json.dumps(tasks))
