@@ -40,10 +40,18 @@ if __name__ == '__main__':
     # Create new project or task
     if (arguments[1] == 'create'):
         if (arguments[2] == 'project'):
-            createProject(arguments[3])
-            resetFile(projectsFile)
-            projectsFile.write(json.dumps(projects))
+            try:
+                createProject(arguments[3])
+                resetFile(projectsFile)
+                projectsFile.write(json.dumps(projects))
+                print('Proyecto creado con exito')
+            except:
+                print('Ohh, algo salio mal...')
         elif (arguments[2] == 'task'):
-            createTask(arguments[3], arguments[4])
-            resetFile(tasksFile)
-            tasksFile.write(json.dumps(tasks))
+            try:
+                createTask(arguments[3], arguments[4])
+                resetFile(tasksFile)
+                tasksFile.write(json.dumps(tasks))
+                print('Tarea creada con exito')
+            except:
+                print('Ohh, algo salio mal...')
