@@ -47,7 +47,15 @@ def deleteProject(id:int):
     projects.pop(index)
     tasks.clear()
     tasks.extend(newTasks)
-    
+
+def deleteTask(projectReference:str, id:str):
+    index = 0
+    for task in tasks:
+        if (task['reference'] == projectReference and task['id'] == id):
+            tasks.pop(index)
+            break
+
+        index += 1
 
 if __name__ == '__main__':
     projectsFile = open('projects.json', 'r+')
@@ -84,4 +92,8 @@ if __name__ == '__main__':
             resetFile(projectsFile)
             resetFile(tasksFile)
             projectsFile.write(json.dumps(projects))
+            tasksFile.write(json.dumps(tasks))
+        elif (arguments[2] == 'task'):
+            deleteTask(arguments[3], arguments[4])
+            resetFile(tasksFile)
             tasksFile.write(json.dumps(tasks))
