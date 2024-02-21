@@ -85,7 +85,20 @@ def updateTaskStatus(projectReference:str, id:str):
             break
 
         index += 1
+
+def showProjects():
+    print('Id' + '  ' + 'Name')
+    print('--' + '  ' + '----')
+    for project in projects:
+        print(project['id'] + ' ' + project['name'])
  
+
+def showTasks():
+    print('Id' + '  ' + 'Description' + '   ' + 'Status' + '    ' + 'Reference')
+    print('----' + '    ' + '-----------' + '   ' + '------' + '    ' + '---------')
+    for task in tasks:
+        print(task['id'] + '    ' + task['description'] + ' ' + str(task['status']) + '  ' + task['reference'])
+
 if __name__ == '__main__':
     projectsFile = open('projects.json', 'r+')
     tasksFile = open('tasks.json', 'r+')
@@ -139,3 +152,10 @@ if __name__ == '__main__':
             updateTaskStatus(arguments[3], arguments[4])
             resetFile(tasksFile)
             tasksFile.write(json.dumps(tasks))
+    
+    # Show projects or tasks list
+    if (arguments[1] == 'show'):
+        if (arguments[2] == 'projects'):
+            showProjects()
+        if (arguments[2] == 'tasks'):
+            showTasks()
