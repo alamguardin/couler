@@ -22,7 +22,7 @@ def createTask(projectReference:str, description:str):
     newTask = {
         'description': description,
         'reference': projectReference,
-        'id': secrets.token_hex(16),
+        'id': secrets.token_hex(4),
         'index': len(tasks) + 1 
     }
 
