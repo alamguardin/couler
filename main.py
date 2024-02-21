@@ -1,3 +1,4 @@
+from ast import arg
 from operator import ne
 import sys
 import json
@@ -13,7 +14,7 @@ def resetFile(file):
 def createProject(name:str):
     newProject = {
         'name': name,
-        'id': len(projects) + 1
+        'id': secrets.token_hex(4)
     }
 
     projects.append(newProject)
@@ -23,17 +24,17 @@ def createTask(projectReference:str, description:str):
         'description': description,
         'reference': projectReference,
         'id': secrets.token_hex(4),
-        'index': len(tasks) + 1 
+        'index': len(tasks) + 1,
+        'status': False
     }
 
     tasks.append(newTask)
 
-def deleteProject(id:int):
+def deleteProject(id:str):
     index = 0
     newTasks = []
     for project in projects:
-        if (int(project['id']) == id):
-            print(project['id'])
+        if (project['id'] == id):
 
             indexTask = 0
             for task in tasks:
@@ -57,6 +58,34 @@ def deleteTask(projectReference:str, id:str):
 
         index += 1
 
+def updateProjectName(id:str, name:str):
+    index = 0
+    previusName = ''
+    for project in projects:
+        if (project['id'] == id):
+            previusName = projects[index]['name']
+            projects[index]['name'] = name
+
+            indexTask = 0
+            for task in tasks:
+                if (task['reference'] == previusName):
+                    tasks[index]['reference'] = name
+            
+            indexTask += 1
+
+            break
+
+        index += 1
+
+def updateTaskStatus(projectReference:str, id:str):
+    index = 0
+    for task in tasks:
+        if (task['reference'] == projectReference and task['id'] == id):
+            tasks[index]['status'] = not tasks[index]['status']
+            break
+
+        index += 1
+ 
 if __name__ == '__main__':
     projectsFile = open('projects.json', 'r+')
     tasksFile = open('tasks.json', 'r+')
@@ -88,12 +117,25 @@ if __name__ == '__main__':
     # Remove project or task
     if (arguments[1] == 'remove'):
         if (arguments[2] == 'project'):
-            deleteProject(int(arguments[3]))
+            deleteProject(arguments[3])
             resetFile(projectsFile)
             resetFile(tasksFile)
             projectsFile.write(json.dumps(projects))
             tasksFile.write(json.dumps(tasks))
         elif (arguments[2] == 'task'):
             deleteTask(arguments[3], arguments[4])
+            resetFile(tasksFile)
+            tasksFile.write(json.dumps(tasks))
+
+    # Update project name o status class
+    if (arguments[1] == 'update'):
+        if (arguments[2] == 'project'):
+            updateProjectName(arguments[3], arguments[4])
+            resetFile(projectsFile)
+            resetFile(tasksFile)
+            projectsFile.write(json.dumps(projects))
+            tasksFile.write(json.dumps(tasks))
+        if (arguments[2] == 'task'):
+            updateTaskStatus(arguments[3], arguments[4])
             resetFile(tasksFile)
             tasksFile.write(json.dumps(tasks))
