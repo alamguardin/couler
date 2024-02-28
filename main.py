@@ -1,8 +1,26 @@
+import array
 from ast import arg
 from operator import ne
 import sys
 import json
 import secrets
+
+COMMANDS_LIST = ['create', 'delete', 'update', 'list']
+OPTIONS_LIST = ['project', 'task']
+
+class Cli:
+    def __init__(self):
+        self.commands = []
+        self.options = []
+
+    def add_command(self, command):
+        if len(command) > 1:
+            self.commands.append(command)
+        else:
+            print('cannot add empty text string as command')
+        
+        print(self.commands)
+
 
 tasks = []
 projects = []
@@ -100,62 +118,65 @@ def showTasks():
         print(task['id'] + '    ' + task['description'] + ' ' + str(task['status']) + '  ' + task['reference'])
 
 if __name__ == '__main__':
-    projectsFile = open('projects.json', 'r+')
-    tasksFile = open('tasks.json', 'r+')
+    cli = Cli()
+    for command in COMMANDS_LIST:
+        cli.add_command(command)
+    # projectsFile = open('projects.json', 'r+')
+    # tasksFile = open('tasks.json', 'r+')
 
-    projects = json.loads(projectsFile.read())
-    tasks = json.loads(tasksFile.read())
+    # projects = json.loads(projectsFile.read())
+    # tasks = json.loads(tasksFile.read())
 
-    arguments = sys.argv
+    # arguments = sys.argv
 
-    # Create new project or task
-    if (arguments[1] == 'create'):
-        if (arguments[2] == 'project'):
-            try:
-                createProject(arguments[3])
-                resetFile(projectsFile)
-                projectsFile.write(json.dumps(projects))
-                print('Proyecto creado con exito')
-            except:
-                print('Ohh, algo salio mal...')
-        elif (arguments[2] == 'task'):
-            try:
-                createTask(arguments[3], arguments[4])
-                resetFile(tasksFile)
-                tasksFile.write(json.dumps(tasks))
-                print('Tarea creada con exito')
-            except:
-                print('Ohh, algo salio mal...')
+    # # Create new project or task
+    # if (arguments[1] == 'create'):
+    #     if (arguments[2] == 'project'):
+    #         try:
+    #             createProject(arguments[3])
+    #             resetFile(projectsFile)
+    #             projectsFile.write(json.dumps(projects))
+    #             print('Proyecto creado con exito')
+    #         except:
+    #             print('Ohh, algo salio mal...')
+    #     elif (arguments[2] == 'task'):
+    #         try:
+    #             createTask(arguments[3], arguments[4])
+    #             resetFile(tasksFile)
+    #             tasksFile.write(json.dumps(tasks))
+    #             print('Tarea creada con exito')
+    #         except:
+    #             print('Ohh, algo salio mal...')
     
-    # Remove project or task
-    if (arguments[1] == 'remove'):
-        if (arguments[2] == 'project'):
-            deleteProject(arguments[3])
-            resetFile(projectsFile)
-            resetFile(tasksFile)
-            projectsFile.write(json.dumps(projects))
-            tasksFile.write(json.dumps(tasks))
-        elif (arguments[2] == 'task'):
-            deleteTask(arguments[3], arguments[4])
-            resetFile(tasksFile)
-            tasksFile.write(json.dumps(tasks))
+    # # Remove project or task
+    # if (arguments[1] == 'remove'):
+    #     if (arguments[2] == 'project'):
+    #         deleteProject(arguments[3])
+    #         resetFile(projectsFile)
+    #         resetFile(tasksFile)
+    #         projectsFile.write(json.dumps(projects))
+    #         tasksFile.write(json.dumps(tasks))
+    #     elif (arguments[2] == 'task'):
+    #         deleteTask(arguments[3], arguments[4])
+    #         resetFile(tasksFile)
+    #         tasksFile.write(json.dumps(tasks))
 
-    # Update project name o status class
-    if (arguments[1] == 'update'):
-        if (arguments[2] == 'project'):
-            updateProjectName(arguments[3], arguments[4])
-            resetFile(projectsFile)
-            resetFile(tasksFile)
-            projectsFile.write(json.dumps(projects))
-            tasksFile.write(json.dumps(tasks))
-        if (arguments[2] == 'task'):
-            updateTaskStatus(arguments[3], arguments[4])
-            resetFile(tasksFile)
-            tasksFile.write(json.dumps(tasks))
+    # # Update project name o status class
+    # if (arguments[1] == 'update'):
+    #     if (arguments[2] == 'project'):
+    #         updateProjectName(arguments[3], arguments[4])
+    #         resetFile(projectsFile)
+    #         resetFile(tasksFile)
+    #         projectsFile.write(json.dumps(projects))
+    #         tasksFile.write(json.dumps(tasks))
+    #     if (arguments[2] == 'task'):
+    #         updateTaskStatus(arguments[3], arguments[4])
+    #         resetFile(tasksFile)
+    #         tasksFile.write(json.dumps(tasks))
     
-    # Show projects or tasks list
-    if (arguments[1] == 'show'):
-        if (arguments[2] == 'projects'):
-            showProjects()
-        if (arguments[2] == 'tasks'):
-            showTasks()
+    # # Show projects or tasks list
+    # if (arguments[1] == 'show'):
+    #     if (arguments[2] == 'projects'):
+    #         showProjects()
+    #     if (arguments[2] == 'tasks'):
+    #         showTasks()
