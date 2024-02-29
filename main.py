@@ -4,6 +4,7 @@ from operator import ne
 import sys
 import json
 import secrets
+import datetime
 
 COMMANDS_LIST = ['create', 'delete', 'update', 'list']
 OPTIONS_LIST = ['project', 'task']
@@ -12,14 +13,42 @@ class Cli:
     def __init__(self):
         self.commands = []
         self.options = []
+        self.projects = []
+        self.tasks = []
+        self.projects_file = None
+        self.tasks_file = None
+    # Private Methods
+    def __writeFile(self, file, content):
+        file.truncate(0)
+        file.seek(0)
+        file.write(content)
 
+    # Public Methods
     def add_command(self, command):
-        if len(command) > 1:
+        if len(command) > 0:
             self.commands.append(command)
         else:
             print('cannot add empty text string as command')
-        
-        print(self.commands)
+    
+    def add_projects_file(self, file):
+        self.projects_file = file
+    
+    def add_tasks_file(self, file):
+        self.tasks_file = file
+
+    def create_project(self, name):
+        if len(name) > 0:
+            new_project = {
+                'create-at': str(datetime.datetime.now()),
+                'id': secrets.token_hex(4),
+                'name': name
+            }
+
+            self.projects.append(new_project)
+            self.__writeFile(self.projects_file, json.dumps(self.projects))
+        else:
+            print('Can\'t add empty string as project name')
+
 
 
 tasks = []
@@ -119,8 +148,21 @@ def showTasks():
 
 if __name__ == '__main__':
     cli = Cli()
+
+    # Add commands to Cli
     for command in COMMANDS_LIST:
         cli.add_command(command)
+    
+    # Set files to Cli
+    cli.add_projects_file(open('projects.json', 'r+'))
+    cli.add_tasks_file(open('tasks.json', 'r+'))
+    
+    # Get commands from cmd
+    commands = sys.argv
+
+    if commands[1] == 'create' and commands[2] == 'project':
+        cli.create_project(commands[3])
+    
     # projectsFile = open('projects.json', 'r+')
     # tasksFile = open('tasks.json', 'r+')
 
