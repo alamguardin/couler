@@ -42,6 +42,13 @@ class Cli:
     def add_tasks_file(self, file):
         self.tasks_file = file
         self.__readFile(file, 'Tasks')
+    
+    def check_exist_project(self, id):
+        for project in self.projects:
+            if project['id'] == id:
+                return True
+        
+        return False
 
     def create_project(self, name):
         if len(name) > 0:
@@ -56,7 +63,19 @@ class Cli:
         else:
             print('Can\'t add empty string as project name')
 
-
+    def create_task(self, description, id_reference):
+        if len(description) > 0:
+            new_task = {
+                'create-at': str(datetime.datetime.now()),
+                'reference': id_reference,
+                'id': secrets.token_hex(4),
+                'description': description,
+                'status': False
+            }
+            self.tasks.append(new_task)
+            self.__writeFile(self.tasks_file, json.dumps(self.tasks))
+        else:
+            print('Can\'t add empty string as task description')
 
 tasks = []
 projects = []
@@ -178,6 +197,21 @@ if __name__ == '__main__':
                 print('Please write something in the text field')
                 continue
     
+    if commands[1] == 'create' and commands[2]  == 'task':
+        try:
+            id_project = commands[3]
+            if cli.check_exist_project(id_project):
+                while(True):
+                    task_description = input('Write a description for your task -> ')
+                    if len(task_description) > 0:
+                        cli.create_task(task_description, id_project)
+                        print('\nTask created successfully ✨')
+                        break 
+                    else:
+                        print('Please write something in the text field')
+                        continue
+        except IndexError:
+            print('You must add the project id to assign a task')
     # projectsFile = open('projects.json', 'r+')
     # tasksFile = open('tasks.json', 'r+')
 
