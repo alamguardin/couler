@@ -22,6 +22,11 @@ class Cli:
         file.truncate(0)
         file.seek(0)
         file.write(content)
+    
+    def __readFile(self, file, saveIn):
+        content = json.loads(file.read())
+        if saveIn == 'Projects': self.projects = content
+        if saveIn == 'Tasks': self.tasks = content
 
     # Public Methods
     def add_command(self, command):
@@ -32,9 +37,11 @@ class Cli:
     
     def add_projects_file(self, file):
         self.projects_file = file
+        self.__readFile(file, 'Projects')
     
     def add_tasks_file(self, file):
         self.tasks_file = file
+        self.__readFile(file, 'Tasks')
 
     def create_project(self, name):
         if len(name) > 0:
@@ -161,7 +168,15 @@ if __name__ == '__main__':
     commands = sys.argv
 
     if commands[1] == 'create' and commands[2] == 'project':
-        cli.create_project(commands[3])
+        while(True):
+            project_name = input('Choose a name for your project -> ')
+            if len(project_name) > 0:
+                cli.create_project(project_name)
+                print('\nCongratulations! You have created a new project ✨')
+                break 
+            else:
+                print('Please write something in the text field')
+                continue
     
     # projectsFile = open('projects.json', 'r+')
     # tasksFile = open('tasks.json', 'r+')
