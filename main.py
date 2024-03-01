@@ -76,6 +76,12 @@ class Cli:
             self.__writeFile(self.tasks_file, json.dumps(self.tasks))
         else:
             print('Can\'t add empty string as task description')
+    
+    def get_projects_list(self):
+        return self.projects
+    
+    def get_tasks_list(self):
+        return self.tasks
 
 tasks = []
 projects = []
@@ -212,6 +218,16 @@ if __name__ == '__main__':
                         continue
         except IndexError:
             print('You must add the project id to assign a task')
+    
+    if commands[1] == 'list' and commands[2] == 'project':
+        list_projects = cli.get_projects_list()
+        for project in list_projects:
+            print(project['id'] + '     ' + project['name'] + '     ' + project['create-at'].split()[0])
+    
+    if commands[1] == 'list' and commands[2] == 'task':
+        list_tasks = cli.get_tasks_list()
+        for task in list_tasks:
+            print(task['id'] + '      ' + task['description'] + '       ' + str(task['status']))
     # projectsFile = open('projects.json', 'r+')
     # tasksFile = open('tasks.json', 'r+')
 
