@@ -27,6 +27,15 @@ class Cli:
         content = json.loads(file.read())
         if saveIn == 'Projects': self.projects = content
         if saveIn == 'Tasks': self.tasks = content
+    
+    def __check_exits_task(self, id):
+        index = 0
+        for task in self.tasks:
+            if task['id'] == id:
+                return index, True
+            index += 1
+        
+        return -1, False
 
     # Public Methods
     def add_command(self, command):
@@ -82,101 +91,16 @@ class Cli:
     
     def get_tasks_list(self):
         return self.tasks
-
-tasks = []
-projects = []
-
-def resetFile(file):
-    file.truncate(0)
-    file.seek(0)
-
-def createProject(name:str):
-    newProject = {
-        'name': name,
-        'id': secrets.token_hex(4)
-    }
-
-    projects.append(newProject)
-
-def createTask(projectReference:str, description:str):
-    newTask = {
-        'description': description,
-        'reference': projectReference,
-        'id': secrets.token_hex(4),
-        'index': len(tasks) + 1,
-        'status': False
-    }
-
-    tasks.append(newTask)
-
-def deleteProject(id:str):
-    index = 0
-    newTasks = []
-    for project in projects:
-        if (project['id'] == id):
-
-            indexTask = 0
-            for task in tasks:
-                if (task['reference'] != project['name']):
-                    newTasks.append(task)
-                indexTask += 1
-
-            break
-        index += 1
     
-    projects.pop(index)
-    tasks.clear()
-    tasks.extend(newTasks)
-
-def deleteTask(projectReference:str, id:str):
-    index = 0
-    for task in tasks:
-        if (task['reference'] == projectReference and task['id'] == id):
-            tasks.pop(index)
-            break
-
-        index += 1
-
-def updateProjectName(id:str, name:str):
-    index = 0
-    previusName = ''
-    for project in projects:
-        if (project['id'] == id):
-            previusName = projects[index]['name']
-            projects[index]['name'] = name
-
-            indexTask = 0
-            for task in tasks:
-                if (task['reference'] == previusName):
-                    tasks[index]['reference'] = name
-            
-            indexTask += 1
-
-            break
-
-        index += 1
-
-def updateTaskStatus(projectReference:str, id:str):
-    index = 0
-    for task in tasks:
-        if (task['reference'] == projectReference and task['id'] == id):
-            tasks[index]['status'] = not tasks[index]['status']
-            break
-
-        index += 1
-
-def showProjects():
-    print('Id' + '  ' + 'Name')
-    print('--' + '  ' + '----')
-    for project in projects:
-        print(project['id'] + ' ' + project['name'])
- 
-
-def showTasks():
-    print('Id' + '  ' + 'Description' + '   ' + 'Status' + '    ' + 'Reference')
-    print('----' + '    ' + '-----------' + '   ' + '------' + '    ' + '---------')
-    for task in tasks:
-        print(task['id'] + '    ' + task['description'] + ' ' + str(task['status']) + '  ' + task['reference'])
+    def update_task_status(self, id_task):
+        index, is_found = self.__check_exits_task(id_task)
+        if is_found:
+            self.tasks[index]['status'] = not self.tasks[index]['status']
+            print('Task updated successfully')
+        else:
+            print('This task does not exist, make sure you enter an existing ID')
+        
+        self.__writeFile(self.tasks_file, json.dumps(self.tasks))
 
 if __name__ == '__main__':
     cli = Cli()
@@ -228,62 +152,10 @@ if __name__ == '__main__':
         list_tasks = cli.get_tasks_list()
         for task in list_tasks:
             print(task['id'] + '      ' + task['description'] + '       ' + str(task['status']))
-    # projectsFile = open('projects.json', 'r+')
-    # tasksFile = open('tasks.json', 'r+')
-
-    # projects = json.loads(projectsFile.read())
-    # tasks = json.loads(tasksFile.read())
-
-    # arguments = sys.argv
-
-    # # Create new project or task
-    # if (arguments[1] == 'create'):
-    #     if (arguments[2] == 'project'):
-    #         try:
-    #             createProject(arguments[3])
-    #             resetFile(projectsFile)
-    #             projectsFile.write(json.dumps(projects))
-    #             print('Proyecto creado con exito')
-    #         except:
-    #             print('Ohh, algo salio mal...')
-    #     elif (arguments[2] == 'task'):
-    #         try:
-    #             createTask(arguments[3], arguments[4])
-    #             resetFile(tasksFile)
-    #             tasksFile.write(json.dumps(tasks))
-    #             print('Tarea creada con exito')
-    #         except:
-    #             print('Ohh, algo salio mal...')
     
-    # # Remove project or task
-    # if (arguments[1] == 'remove'):
-    #     if (arguments[2] == 'project'):
-    #         deleteProject(arguments[3])
-    #         resetFile(projectsFile)
-    #         resetFile(tasksFile)
-    #         projectsFile.write(json.dumps(projects))
-    #         tasksFile.write(json.dumps(tasks))
-    #     elif (arguments[2] == 'task'):
-    #         deleteTask(arguments[3], arguments[4])
-    #         resetFile(tasksFile)
-    #         tasksFile.write(json.dumps(tasks))
-
-    # # Update project name o status class
-    # if (arguments[1] == 'update'):
-    #     if (arguments[2] == 'project'):
-    #         updateProjectName(arguments[3], arguments[4])
-    #         resetFile(projectsFile)
-    #         resetFile(tasksFile)
-    #         projectsFile.write(json.dumps(projects))
-    #         tasksFile.write(json.dumps(tasks))
-    #     if (arguments[2] == 'task'):
-    #         updateTaskStatus(arguments[3], arguments[4])
-    #         resetFile(tasksFile)
-    #         tasksFile.write(json.dumps(tasks))
-    
-    # # Show projects or tasks list
-    # if (arguments[1] == 'show'):
-    #     if (arguments[2] == 'projects'):
-    #         showProjects()
-    #     if (arguments[2] == 'tasks'):
-    #         showTasks()
+    if commands[1] == 'update' and commands[2] == 'task':
+        try:
+            id_task = commands[3]
+            cli.update_task_status(id_task)
+        except IndexError:
+             print('You must add the task id to change its status')
