@@ -130,7 +130,16 @@ class Cli:
         
         self.__writeFile(self.projects_file, json.dumps(self.projects))
         self.__writeFile(self.tasks_file, json.dumps(self.tasks))
-
+    
+    def delete_task(self, id):
+        index, is_found = self.__check_exits_task(id)
+        if is_found:
+            self.tasks.pop(index)
+            print('Successful task deletion')
+        else:
+            print('This task does not exist, make sure you enter an existing ID')
+        
+        self.__writeFile(self.tasks_file, json.dumps(self.tasks))
 
 if __name__ == '__main__':
     cli = Cli()
@@ -194,5 +203,12 @@ if __name__ == '__main__':
         try:
             id_project = commands[3]
             cli.delete_project(id_project)
+        except IndexError:
+            print('You must add an id to delete a project')
+    
+    if commands[1] == 'delete' and commands[2] == 'task':
+        try:
+            id_task = commands[3]
+            cli.delete_task(id_task)
         except IndexError:
             print('You must add an id to delete a task')
