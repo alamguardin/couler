@@ -5,9 +5,21 @@ import sys
 import json
 import secrets
 import datetime
+from terminaltables import AsciiTable
 
 COMMANDS_LIST = ['create', 'delete', 'update', 'list']
 OPTIONS_LIST = ['project', 'task']
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 class Cli:
     def __init__(self):
@@ -184,13 +196,33 @@ if __name__ == '__main__':
     
     if commands[1] == 'list' and commands[2] == 'project':
         list_projects = cli.get_projects_list()
+        table_data = [
+            [bcolors.OKBLUE + 'ID' + bcolors.ENDC, bcolors.OKBLUE + 'Name' + bcolors.ENDC, bcolors.OKBLUE + 'Create at' + bcolors.ENDC]
+        ]
         for project in list_projects:
-            print(project['id'] + '     ' + project['name'] + '     ' + project['create-at'].split()[0])
+            table_data.append([
+                bcolors.WARNING + project['id'] + bcolors.ENDC,
+                bcolors.OKCYAN + project['name'] + bcolors.ENDC,
+                project['create-at'].split()[0]
+            ])
+        
+        table = AsciiTable(table_data)
+        print(table.table)
     
     if commands[1] == 'list' and commands[2] == 'task':
         list_tasks = cli.get_tasks_list()
+        table_data = [
+            [bcolors.OKBLUE + 'ID' + bcolors.ENDC, bcolors.OKBLUE + 'Description' + bcolors.ENDC, bcolors.OKBLUE + 'Status' + bcolors.ENDC]
+        ]
         for task in list_tasks:
-            print(task['id'] + '      ' + task['description'] + '       ' + str(task['status']))
+            table_data.append([
+                bcolors.WARNING + task['id'] + bcolors.ENDC, 
+                task['description'], 
+                bcolors.OKCYAN + str(task['status']) + bcolors.ENDC
+            ])
+        
+        table = AsciiTable(table_data)
+        print(table.table)
     
     if commands[1] == 'update' and commands[2] == 'task':
         try:
