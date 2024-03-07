@@ -1,2 +1,5 @@
 projects.json
 tasks.json
+build
+dist
+.spec
