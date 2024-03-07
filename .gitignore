@@ -2,4 +2,4 @@ projects.json
 tasks.json
 build
 dist
-main.spec
+*.spec
