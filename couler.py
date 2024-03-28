@@ -2,6 +2,11 @@ import argparse
 import json
 import os
 
+def createCoreFolder():
+    os.mkdir('.couler')
+    dataFile = open('.couler/data.json', 'w')
+    dataFile.write('[]')
+
 def findByString(str:str, arr:list):
     try: 
         arr.index(str)
@@ -14,9 +19,16 @@ def checkExistCoulerFolder():
     dirs = os.listdir(path)
     existCoulerFolder = findByString('.couler', dirs)
 
+    return existCoulerFolder
+
+def initParser():
+    existCoulerFolder = checkExistCoulerFolder()
+
     if not existCoulerFolder:
-        os.mkdir('.couler')
-    
+        createCoreFolder()
+    else:
+        print('Couler was previously initiated')
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -50,7 +62,7 @@ def main():
     elif args.command == 'delete':
         print('Is delete')
     elif args.command == 'init':
-        checkExistCoulerFolder()
+        initParser()
 
 if __name__ == '__main__':
     main()
