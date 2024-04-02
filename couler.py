@@ -71,6 +71,13 @@ def logParser(data:list):
     table = AsciiTable(tableData)
     print(table.table)
 
+def updateParser(id:str, data:list):
+    for item in data:
+        if item['id'] == id:
+            item['status'] = not item['status']
+    
+    writeInDataFile(data)
+
 def main():
     parser = argparse.ArgumentParser(
         description = 'Couler, a CLI to manage tasks'
@@ -99,7 +106,7 @@ def main():
     elif args.command == 'log':
         logParser(storage)
     elif args.command == 'update':
-        print('Is update')
+        updateParser(args.id_task, storage)
     elif args.command == 'delete':
         print('Is delete')
     elif args.command == 'init':
