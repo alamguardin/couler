@@ -1,6 +1,16 @@
 import argparse
 import json
 import os
+import secrets
+from datetime import datetime
+from terminaltables import AsciiTable
+
+def readContentInDataFile():
+    return json.loads(open('.couler/data.json', 'r').read())
+
+def writeInDataFile(data:list):
+    dataFile = open('.couler/data.json', 'w')
+    dataFile.write(json.dumps(data))
 
 def createCoreFolder():
     os.mkdir('.couler')
@@ -29,6 +39,37 @@ def initParser():
     else:
         print('Couler was previously initiated')
 
+def addParser(task:str, data:list):
+    taskTemplate = {
+        'id': secrets.token_hex(4),
+        'description': task,
+        'status': False,
+        'create-at': str(datetime.now()).split(' ')[0]
+    }
+
+    data.append(taskTemplate)
+    writeInDataFile(data)
+
+def logParser(data:list):
+    tableData = [
+        ['\033[36m' + 'ID' + '\033[0m', 
+         '\033[36m' + 'Description' + '\033[0m', 
+         '\033[36m' + 'Status' + '\033[0m', 
+         '\033[36m' + 'Date' + '\033[0m'
+        ]
+    ]
+
+    for item in data:
+        tableData.append(
+            ['\033[32m' + item['id'] + '\033[0m', 
+             '\033[97m' + item['description'] + '\033[0m', 
+             '\033[33m' + str(item['status']) + '\033[0m', 
+             '\033[36m' + item['create-at'] + '\033[0m'
+            ]
+        )
+
+    table = AsciiTable(tableData)
+    print(table.table)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -42,8 +83,7 @@ def main():
     add_parser = sub_parsers.add_parser('add')
     add_parser.add_argument('task', metavar='task')
 
-    log_parser = sub_parsers.add_parser('log')
-    log_parser.add_argument('log', metavar='log')
+    sub_parsers.add_parser('log')
 
     update_parser = sub_parsers.add_parser('update')
     update_parser.add_argument('id_task', metavar='update')
@@ -52,11 +92,12 @@ def main():
     delete_parser.add_argument('tasK_id', metavar='delete')
 
     args = parser.parse_args()
+    storage = readContentInDataFile()
 
     if args.command == 'add':
-        print('Is add')
+        addParser(args.task, storage)
     elif args.command == 'log':
-        print('Is log')
+        logParser(storage)
     elif args.command == 'update':
         print('Is update')
     elif args.command == 'delete':
