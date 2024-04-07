@@ -78,6 +78,24 @@ def updateParser(id:str, data:list):
     
     writeInDataFile(data)
 
+def deleteParser(id:str, data:list):
+    global count
+    global existTask 
+
+    count = 0
+    existTask = False
+
+    for item in data:
+        if item['id'] == id:
+            existTask = True
+            break
+        count += 1
+
+    if existTask:
+        print(count)
+        data.pop(count)
+        writeInDataFile(data)
+
 def main():
     parser = argparse.ArgumentParser(
         description = 'Couler, a CLI to manage tasks'
@@ -96,7 +114,7 @@ def main():
     update_parser.add_argument('id_task', metavar='update')
 
     delete_parser = sub_parsers.add_parser('delete')
-    delete_parser.add_argument('tasK_id', metavar='delete')
+    delete_parser.add_argument('id_task', metavar='delete')
 
     args = parser.parse_args()
     storage = readContentInDataFile()
@@ -108,7 +126,7 @@ def main():
     elif args.command == 'update':
         updateParser(args.id_task, storage)
     elif args.command == 'delete':
-        print('Is delete')
+        deleteParser(args.id_task, storage)
     elif args.command == 'init':
         initParser()
 
