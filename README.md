@@ -1,5 +1,7 @@
 # Couler: Un CLI para manejar tus tareas
 
+![Couler preview](/shots/preview.png)
+
 ## ¿Como usar?
 
 ### Instalacion
