@@ -3,10 +3,12 @@ import json
 import os
 import secrets
 from datetime import datetime
-from terminaltables import AsciiTable
 
 def readContentInDataFile():
-    return json.loads(open('.couler/data.json', 'r').read())
+    try:
+        return json.loads(open('.couler/data.json', 'r').read())
+    except:
+        return []
 
 def writeInDataFile(data:list):
     dataFile = open('.couler/data.json', 'w')
@@ -51,25 +53,20 @@ def addParser(task:str, data:list):
     writeInDataFile(data)
 
 def logParser(data:list):
-    tableData = [
-        ['\033[36m' + 'ID' + '\033[0m', 
-         '\033[36m' + 'Description' + '\033[0m', 
-         '\033[36m' + 'Status' + '\033[0m', 
-         '\033[36m' + 'Date' + '\033[0m'
-        ]
-    ]
+    headerTable = '\nStatus\tDescription\tID\n'
 
-    for item in data:
-        tableData.append(
-            ['\033[32m' + item['id'] + '\033[0m', 
-             '\033[97m' + item['description'] + '\033[0m', 
-             '\033[33m' + str(item['status']) + '\033[0m', 
-             '\033[36m' + item['create-at'] + '\033[0m'
-            ]
-        )
+    if data:
+        print(headerTable)
 
-    table = AsciiTable(tableData)
-    print(table.table)
+        for item in data:
+            statusItem = ('\033[92m' + '✔' + '\033[0m') if item['status'] else ('\033[91m' + '𐄂' + '\033[0m')
+            print(
+                statusItem + '\t' +
+                '\033[97m' + item['description'] + '\033[0m' '\t' +
+                item['id'] + '\t'
+            )
+    else:
+        print('\033[97m' + '\nThere are no pending tasks' + '\033[0m')
 
 def updateParser(id:str, data:list):
     for item in data:
@@ -108,27 +105,20 @@ def main():
     add_parser = sub_parsers.add_parser('add')
     add_parser.add_argument('task', metavar='task')
 
-    sub_parsers.add_parser('log')
+    sub_parsers.add_parser('list')
 
     update_parser = sub_parsers.add_parser('update')
-    update_parser.add_argument('id_task', metavar='update')
+    update_parser.add_argument('id', metavar='update')
 
     delete_parser = sub_parsers.add_parser('delete')
-    delete_parser.add_argument('id_task', metavar='delete')
+    delete_parser.add_argument('id', metavar='delete')
 
     args = parser.parse_args()
-    storage = readContentInDataFile()
+    data = readContentInDataFile()
 
-    if args.command == 'add':
-        addParser(args.task, storage)
-    elif args.command == 'log':
-        logParser(storage)
-    elif args.command == 'update':
-        updateParser(args.id_task, storage)
-    elif args.command == 'delete':
-        deleteParser(args.id_task, storage)
-    elif args.command == 'init':
-        initParser()
+    if args.command == 'add': addParser(args.task, data)
+    if args.command == 'list': logParser(data)
+    if args.command == 'init': initParser()
 
 if __name__ == '__main__':
     main()
