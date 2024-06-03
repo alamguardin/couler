@@ -51,6 +51,7 @@ def addParser(task:str, data:list):
 
     data.append(taskTemplate)
     writeInDataFile(data)
+    print('\n' + '\033[97m' + 'Task created successfully ✨' + '\033[0m')
 
 def logParser(data:list):
     headerTable = '\nStatus\tDescription\tID\n'
@@ -74,6 +75,7 @@ def checkParser(id:str, data:list):
             item['status'] = True
     
     writeInDataFile(data)
+    print('\n' + '\033[97m' + 'Task completed successfully 🌝' + '\033[0m')
 
 def deleteParser(id:str, data:list):
     global count
@@ -91,6 +93,8 @@ def deleteParser(id:str, data:list):
     if existTask:
         data.pop(count)
         writeInDataFile(data)
+    
+    print('\n' + '\033[97m' + 'Task deleted successfully 🔥' + '\033[0m')
 
 def main():
     parser = argparse.ArgumentParser(
