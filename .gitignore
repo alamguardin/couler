@@ -2,5 +2,6 @@ projects.json
 tasks.json
 build
 dist
+output
 *.spec
 .couler

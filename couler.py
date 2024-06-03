@@ -68,10 +68,10 @@ def logParser(data:list):
     else:
         print('\033[97m' + '\nThere are no pending tasks' + '\033[0m')
 
-def updateParser(id:str, data:list):
+def checkParser(id:str, data:list):
     for item in data:
         if item['id'] == id:
-            item['status'] = not item['status']
+            item['status'] = True
     
     writeInDataFile(data)
 
@@ -106,8 +106,8 @@ def main():
 
     sub_parsers.add_parser('list')
 
-    update_parser = sub_parsers.add_parser('update')
-    update_parser.add_argument('id', metavar='update')
+    update_parser = sub_parsers.add_parser('check')
+    update_parser.add_argument('id', metavar='check')
 
     delete_parser = sub_parsers.add_parser('delete')
     delete_parser.add_argument('id', metavar='delete')
@@ -118,6 +118,7 @@ def main():
     if args.command == 'init': initParser()
     if args.command == 'add': addParser(args.task, data)
     if args.command == 'list': logParser(data)
+    if args.command == 'check': checkParser(args.id, data)
     if args.command == 'delete': deleteParser(args.id, data)
 
 if __name__ == '__main__':
