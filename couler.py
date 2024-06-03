@@ -89,7 +89,6 @@ def deleteParser(id:str, data:list):
         count += 1
 
     if existTask:
-        print(count)
         data.pop(count)
         writeInDataFile(data)
 
@@ -116,9 +115,10 @@ def main():
     args = parser.parse_args()
     data = readContentInDataFile()
 
+    if args.command == 'init': initParser()
     if args.command == 'add': addParser(args.task, data)
     if args.command == 'list': logParser(data)
-    if args.command == 'init': initParser()
+    if args.command == 'delete': deleteParser(args.id, data)
 
 if __name__ == '__main__':
     main()
