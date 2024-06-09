@@ -1,5 +1,5 @@
 # core modules
-from utils.findByString import findByString
+from ..utils import findByString
 
 # third party modules
 import os

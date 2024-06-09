@@ -1,19 +1,12 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='Couler',
+    name='couler',
     version='0.0.1',
-    install_requires=[
-        'json',
-        'argparse',
-        'secrets'
-    ],
-    packages=find_packages(
-        where='app'
-    ),
+    packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'couler = app:hello_world',
+            'couler = couler:main',
         ]
     }
 )

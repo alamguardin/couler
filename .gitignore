@@ -6,3 +6,4 @@ output
 *.spec
 .couler
 __pycache__
+couler.egg-info

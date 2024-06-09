@@ -1,4 +1,4 @@
-from core.fileManagement import writeFile
+from ..core import writeFile
 
 def delete(id:str, data:list):
     global count

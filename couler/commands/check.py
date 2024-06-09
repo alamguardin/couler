@@ -1,4 +1,4 @@
-from core.fileManagement import writeFile
+from ..core import writeFile
 
 def check(id:str, data:list):
     for item in data:

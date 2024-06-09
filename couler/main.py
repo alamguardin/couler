@@ -1,12 +1,21 @@
 # core modules
-from core.addCoreFolder import checkExistCoulerFolder
-from core.fileManagement import readContent
-from utils.commandsList import COMMANDS_LIST
-from commands.init import init
-from commands.add import add
-from commands.log import log
-from commands.check import check
-from commands.delete import delete
+# from couler.core.addCoreFolder import checkExistCoulerFolder
+# from couler.core.fileManagement import readContent
+# from couler.utils.commandsList import COMMANDS_LIST
+# from couler.commands.init import init
+# from couler.commands.add import add
+# from couler.commands.log import log
+# from couler.commands.check import check
+# from couler.commands.delete import delete
+
+from .core import checkExistCoulerFolder
+from .core import readContent
+from .utils import COMMANDS_LIST
+from .commands import init
+from .commands import add
+from .commands import log
+from .commands import check
+from .commands import delete
 
 # Third party modules
 import argparse

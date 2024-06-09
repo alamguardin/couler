@@ -1,5 +1,5 @@
 # core modules
-from core.addCoreFolder import createCoreFolder
+from ..core import createCoreFolder
 
 def init():
     createCoreFolder()

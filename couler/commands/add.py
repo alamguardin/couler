@@ -1,5 +1,5 @@
 # Core modules
-from core.fileManagement import writeFile
+from ..core import writeFile
 
 # Third party modules
 import secrets
